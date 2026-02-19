@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  ArrowLeft, AlertTriangle, Clock, TrendingUp, Activity,
-  MessageSquare, CheckCircle, Download, Copy,
-} from "lucide-react";
-import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
   BarChart, Bar, PieChart, Pie, Cell, Legend,
 } from "recharts";
@@ -15,6 +11,12 @@ import { generateInterventions } from "@/utils/interventionEngine";
 import { log } from "@/utils/auditLogger";
 import { RiskBadge } from "@/components/RiskBadge";
 import { useToast } from "@/hooks/use-toast";
+import { CustomerInfoModal } from "@/components/CustomerInfoModal";
+import type { CustomerBasicInfo } from "@/types";
+import {
+  ArrowLeft, AlertTriangle, Clock, TrendingUp, Activity,
+  MessageSquare, CheckCircle, Download, Copy, Edit
+} from "lucide-react";
 
 const BAND_COLORS: Record<string, string> = {
   Low: "#22c55e", Medium: "#f59e0b", High: "#f97316", Critical: "#ef4444",
@@ -29,6 +31,7 @@ export function CustomerDetailPage() {
   const [triggering, setTriggering] = useState(false);
   const [notes, setNotes] = useState("");
   const [notesInit, setNotesInit] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const customer = customers.find((c) => c.id === selectedCustomerId);
 
@@ -90,6 +93,22 @@ export function CustomerDetailPage() {
     toast({ title: "Notes saved" });
   };
 
+  const onEditProfile = (data: CustomerBasicInfo) => {
+    const updated = {
+      ...customer,
+      ...data,
+      age: parseInt(data.age),
+      employmentType: data.employmentType as any,
+      preferredChannel: data.preferredChannel as any,
+      lastUpdated: new Date().toISOString(),
+    };
+    upsertCustomer(updated);
+    log("CUSTOMER_PROFILE_UPDATED", `Profile edited for ${customer.id}`, { name: data.name });
+    refreshCustomers();
+    setShowEditModal(false);
+    toast({ title: "Profile updated successfully" });
+  };
+
   const scoreColor = customer.band === "Critical" ? "text-risk-critical" : customer.band === "High" ? "text-risk-high" : customer.band === "Medium" ? "text-risk-medium" : "text-risk-low";
 
   return (
@@ -138,6 +157,35 @@ export function CustomerDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Left col */}
         <div className="space-y-4">
+          {/* Basic Profile */}
+          <div className="card-banking p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-foreground">Basic Profile</h3>
+              <button
+                onClick={() => setShowEditModal(true)}
+                className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <Edit className="w-3.5 h-3.5" />
+              </button>
+            </div>
+            <div className="space-y-2.5">
+              {[
+                { label: "Name", value: customer.name },
+                { label: "Age", value: `${customer.age} years` },
+                { label: "Occupation", value: customer.occupation },
+                { label: "Employment", value: customer.employmentType },
+                { label: "City", value: customer.city },
+                { label: "Mobile", value: customer.mobile },
+                { label: "Pref. Channel", value: customer.preferredChannel },
+              ].map((item) => (
+                <div key={item.label} className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">{item.label}</span>
+                  <span className="font-medium text-foreground">{item.value || "-"}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Signals */}
           <div className="card-banking p-4">
             <h3 className="text-sm font-semibold text-foreground mb-3">Risk Signals</h3>

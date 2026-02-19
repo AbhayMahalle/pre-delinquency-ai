@@ -3,6 +3,7 @@ import type { Transaction, TxnChannel } from "@/types";
 
 export interface ParseResult {
   transactions: Transaction[];
+  customerName?: string;
   errors: string[];
   warnings: string[];
   rawRows: number;
@@ -182,5 +183,12 @@ export function parseCSV(csvText: string): ParseResult {
   // Sort by date ascending
   transactions.sort((a, b) => a.date.localeCompare(b.date));
 
-  return { transactions, errors, warnings, rawRows };
+  // Extract customer name if present (using first row)
+  let customerName: string | undefined;
+  if (headers.includes("customer_name")) {
+    const firstRowName = result.data.find(r => r["customer_name"]?.trim())?.["customer_name"]?.trim();
+    if (firstRowName) customerName = firstRowName;
+  }
+
+  return { transactions, customerName, errors, warnings, rawRows };
 }

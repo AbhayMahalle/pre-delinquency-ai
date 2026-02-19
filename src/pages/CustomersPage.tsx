@@ -4,13 +4,15 @@ import { useApp } from "@/hooks/useAppStore";
 import { RiskBadge, RiskScoreBar } from "@/components/RiskBadge";
 import type { RiskBand, CustomerStatus } from "@/types";
 
-type SortKey = "riskScore" | "salaryDelayDays" | "savingsDrawdownPercent" | "estimatedDaysToDelinquency";
+type SortKey = "riskScore" | "salaryDelayDays" | "savingsDrawdownPercent" | "estimatedDaysToDelinquency" | "age" | "name";
 
 export function CustomersPage() {
   const { customers, navigate } = useApp();
   const [search, setSearch] = useState("");
   const [bandFilter, setBandFilter] = useState<RiskBand | "All">("All");
   const [statusFilter, setStatusFilter] = useState<CustomerStatus | "All">("All");
+  const [empFilter, setEmpFilter] = useState<string>("All");
+  const [cityFilter, setCityFilter] = useState<string>("All");
   const [sortKey, setSortKey] = useState<SortKey>("riskScore");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
 
@@ -19,13 +21,18 @@ export function CustomersPage() {
     if (search) list = list.filter((c) => c.id.toLowerCase().includes(search.toLowerCase()) || c.name.toLowerCase().includes(search.toLowerCase()));
     if (bandFilter !== "All") list = list.filter((c) => c.band === bandFilter);
     if (statusFilter !== "All") list = list.filter((c) => c.status === statusFilter);
+    if (empFilter !== "All") list = list.filter((c) => c.employmentType === empFilter);
+    if (cityFilter !== "All") list = list.filter((c) => c.city === cityFilter);
     list.sort((a, b) => {
-      const av = a[sortKey] as number;
-      const bv = b[sortKey] as number;
-      return sortDir === "desc" ? bv - av : av - bv;
+      const av = a[sortKey];
+      const bv = b[sortKey];
+      if (typeof av === "string" && typeof bv === "string") {
+        return sortDir === "desc" ? bv.localeCompare(av) : av.localeCompare(bv);
+      }
+      return sortDir === "desc" ? (bv as number) - (av as number) : (av as number) - (bv as number);
     });
     return list;
-  }, [customers, search, bandFilter, statusFilter, sortKey, sortDir]);
+  }, [customers, search, bandFilter, statusFilter, empFilter, cityFilter, sortKey, sortDir]);
 
   const toggleSort = (key: SortKey) => {
     if (sortKey === key) setSortDir((d) => (d === "desc" ? "asc" : "desc"));
@@ -43,6 +50,9 @@ export function CustomersPage() {
     a.href = url; a.download = "customers_export.csv"; a.click();
     URL.revokeObjectURL(url);
   };
+
+  const uniqueCities = useMemo(() => Array.from(new Set(customers.map(c => c.city || "Unknown"))).sort(), [customers]);
+  const uniqueEmpTypes = useMemo(() => Array.from(new Set(customers.map(c => c.employmentType || "Unknown"))).sort(), [customers]);
 
   const STATUS_COLORS: Record<CustomerStatus, string> = {
     Active: "bg-risk-low-bg text-risk-low",
@@ -88,6 +98,22 @@ export function CustomersPage() {
           {["Critical", "High", "Medium", "Low"].map((b) => <option key={b} value={b}>{b}</option>)}
         </select>
         <select
+          value={empFilter}
+          onChange={(e) => setEmpFilter(e.target.value)}
+          className="px-3 py-1.5 text-xs rounded-lg border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+        >
+          <option value="All">All Employment</option>
+          {uniqueEmpTypes.map((e) => <option key={e} value={e}>{e}</option>)}
+        </select>
+        <select
+          value={cityFilter}
+          onChange={(e) => setCityFilter(e.target.value)}
+          className="px-3 py-1.5 text-xs rounded-lg border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+        >
+          <option value="All">All Cities</option>
+          {uniqueCities.map((c) => <option key={c} value={c}>{c}</option>)}
+        </select>
+        <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as CustomerStatus | "All")}
           className="px-3 py-1.5 text-xs rounded-lg border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
@@ -115,7 +141,17 @@ export function CustomersPage() {
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-border bg-muted/50">
-                  <th className="px-3 py-2.5 text-left font-semibold text-muted-foreground">Customer</th>
+                  <th className="px-3 py-2.5 text-left font-semibold text-muted-foreground">
+                    <button onClick={() => toggleSort("name")} className="flex items-center gap-1 hover:text-foreground">
+                      Customer <ArrowUpDown className="w-3 h-3" />
+                    </button>
+                  </th>
+                  <th className="px-3 py-2.5 text-left font-semibold text-muted-foreground">
+                    <button onClick={() => toggleSort("age")} className="flex items-center gap-1 hover:text-foreground">
+                      Age <ArrowUpDown className="w-3 h-3" />
+                    </button>
+                  </th>
+                  <th className="px-3 py-2.5 text-left font-semibold text-muted-foreground">Details</th>
                   <th className="px-3 py-2.5 text-left font-semibold text-muted-foreground">
                     <button onClick={() => toggleSort("riskScore")} className="flex items-center gap-1 hover:text-foreground">
                       Risk Score <ArrowUpDown className="w-3 h-3" />
@@ -123,22 +159,6 @@ export function CustomersPage() {
                   </th>
                   <th className="px-3 py-2.5 text-left font-semibold text-muted-foreground">Band</th>
                   <th className="px-3 py-2.5 text-left font-semibold text-muted-foreground">Default Prob</th>
-                  <th className="px-3 py-2.5 text-left font-semibold text-muted-foreground">
-                    <button onClick={() => toggleSort("salaryDelayDays")} className="flex items-center gap-1 hover:text-foreground">
-                      Salary Delay <ArrowUpDown className="w-3 h-3" />
-                    </button>
-                  </th>
-                  <th className="px-3 py-2.5 text-left font-semibold text-muted-foreground">
-                    <button onClick={() => toggleSort("savingsDrawdownPercent")} className="flex items-center gap-1 hover:text-foreground">
-                      Savings Drawdown <ArrowUpDown className="w-3 h-3" />
-                    </button>
-                  </th>
-                  <th className="px-3 py-2.5 text-left font-semibold text-muted-foreground">Lending App</th>
-                  <th className="px-3 py-2.5 text-left font-semibold text-muted-foreground">
-                    <button onClick={() => toggleSort("estimatedDaysToDelinquency")} className="flex items-center gap-1 hover:text-foreground">
-                      Days Left <ArrowUpDown className="w-3 h-3" />
-                    </button>
-                  </th>
                   <th className="px-3 py-2.5 text-left font-semibold text-muted-foreground">Status</th>
                 </tr>
               </thead>
@@ -151,25 +171,18 @@ export function CustomersPage() {
                   >
                     <td className="px-3 py-2.5">
                       <p className="font-mono font-semibold text-foreground">{c.id}</p>
-                      <p className="text-muted-foreground text-[10px]">{c.name} · {c.segment}</p>
+                      <p className="text-muted-foreground text-[10px]">{c.name}</p>
+                    </td>
+                    <td className="px-3 py-2.5 text-foreground">{c.age || "-"}</td>
+                    <td className="px-3 py-2.5 text-[10px] text-muted-foreground">
+                      <div>{c.occupation || "-"}</div>
+                      <div>{c.city || "-"}</div>
                     </td>
                     <td className="px-3 py-2.5 w-32">
                       <RiskScoreBar score={c.riskScore} />
                     </td>
                     <td className="px-3 py-2.5"><RiskBadge band={c.band} /></td>
                     <td className="px-3 py-2.5 font-mono font-bold text-foreground">{c.predictedDefaultProbability}%</td>
-                    <td className={`px-3 py-2.5 font-mono ${c.salaryDelayDays > 3 ? "text-risk-high font-bold" : "text-foreground"}`}>
-                      {c.salaryDelayDays.toFixed(1)}d
-                    </td>
-                    <td className={`px-3 py-2.5 font-mono ${c.savingsDrawdownPercent > 8 ? "text-risk-high font-bold" : "text-foreground"}`}>
-                      {c.savingsDrawdownPercent.toFixed(1)}%
-                    </td>
-                    <td className={`px-3 py-2.5 font-mono ${c.lendingAppTxnCount >= 3 ? "text-risk-critical font-bold" : "text-foreground"}`}>
-                      {c.lendingAppTxnCount}
-                    </td>
-                    <td className={`px-3 py-2.5 font-mono font-bold ${c.estimatedDaysToDelinquency <= 14 ? "text-risk-critical" : c.estimatedDaysToDelinquency <= 21 ? "text-risk-high" : "text-foreground"}`}>
-                      {c.estimatedDaysToDelinquency}d
-                    </td>
                     <td className="px-3 py-2.5">
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${STATUS_COLORS[c.status]}`}>
                         {c.status}

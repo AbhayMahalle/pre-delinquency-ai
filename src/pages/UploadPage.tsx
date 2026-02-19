@@ -10,8 +10,19 @@ import { getInterventionText } from "@/utils/interventionEngine";
 import { upsertCustomer, saveTransactionsForCustomer, addAlerts, getSettings, getCustomerById } from "@/utils/storage";
 import { log } from "@/utils/auditLogger";
 import { useToast } from "@/hooks/use-toast";
-import type { CustomerProfile, Transaction } from "@/types";
+import type { CustomerProfile, Transaction, CustomerBasicInfo } from "@/types";
 import { downloadCSV } from "@/utils/csvGenerator";
+import { CustomerInfoModal } from "@/components/CustomerInfoModal";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const STEPS = [
   "Parsing CSV",
@@ -35,17 +46,39 @@ export function UploadPage() {
   const [step, setStep] = useState(-1);
   const [doneCustomer, setDoneCustomer] = useState<CustomerProfile | null>(null);
 
+  // New state for customer info flow
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [showExistsModal, setShowExistsModal] = useState(false);
+  const [basicInfo, setBasicInfo] = useState<CustomerBasicInfo | null>(null);
+  const [pendingCustomerName, setPendingCustomerName] = useState<string | undefined>(undefined);
+
   const processFile = useCallback(async (f: File) => {
     setFile(f);
     setErrors([]);
     setWarnings([]);
     setTxns([]);
     setDoneCustomer(null);
+    setBasicInfo(null);
+
     const text = await f.text();
     const result = parseCSV(text);
+
     setErrors(result.errors);
     setWarnings(result.warnings);
     setTxns(result.transactions);
+
+    // If valid CSV, check existing customer
+    if (result.errors.length === 0 && result.transactions.length > 0) {
+      const cid = result.transactions[0].customerId;
+      setPendingCustomerName(result.customerName);
+
+      const existing = getCustomerById(cid);
+      if (existing) {
+        setShowExistsModal(true);
+      } else {
+        setShowInfoModal(true);
+      }
+    }
   }, []);
 
   const onDrop = useCallback((e: React.DragEvent) => {
@@ -55,7 +88,7 @@ export function UploadPage() {
     if (f && f.name.endsWith(".csv")) processFile(f);
   }, [processFile]);
 
-  const runPipeline = async () => {
+  const runPipeline = async (info: CustomerBasicInfo) => {
     if (!txns.length) return;
     setProcessing(true);
     const settings = getSettings();
@@ -76,10 +109,6 @@ export function UploadPage() {
     const confidence = computeDataConfidence(txns);
     const existing = getCustomerById(customerId);
 
-    // Generate name
-    const names = ["Arjun Sharma", "Priya Patel", "Vikram Mehta", "Sneha Rao", "Rahul Gupta"];
-    const nameIdx = customerId.charCodeAt(customerId.length - 1) % names.length;
-
     const uploadEntry = {
       uploadId: `UP-${Date.now()}`,
       timestamp: new Date().toISOString(),
@@ -90,8 +119,15 @@ export function UploadPage() {
 
     const customer: CustomerProfile = {
       id: customerId,
-      name: existing?.name ?? names[nameIdx],
-      segment,
+      name: info.name,
+      mobile: info.mobile,
+      email: info.email,
+      age: parseInt(info.age),
+      occupation: info.occupation,
+      employmentType: info.employmentType as any,
+      city: info.city,
+      preferredChannel: info.preferredChannel as any,
+      segment, // logic keeps calculated segment for risk factors, but basic info has explicit employmentType
       riskScore,
       band,
       predictedDefaultProbability: Math.round(riskScore * 100),
@@ -123,6 +159,12 @@ export function UploadPage() {
     addAlerts(newAlerts);
 
     log("UPLOAD", `CSV uploaded for customer ${customerId}`, { txnCount: txns.length, fileName: file?.name });
+    log("CUSTOMER_PROFILE_UPDATED", `Customer ${customerId} basic profile saved during CSV upload.`, {
+      customerId,
+      name: customer.name,
+      employmentType: customer.employmentType,
+      city: customer.city
+    });
     log("RISK_SCORE", `Risk scored: ${customerId} => ${band} (${(riskScore * 100).toFixed(1)})`, { riskScore, band });
     log("ALERT_GENERATED", `${newAlerts.length} alerts generated for ${customerId}`, { alertIds: newAlerts.map((a) => a.alertId) });
 
@@ -139,8 +181,15 @@ export function UploadPage() {
 
     const isUpdate = !!existing;
     if (isUpdate) {
-      toast({ title: "Customer updated", description: "New transaction batch processed." });
+      toast({ title: "Customer updated", description: "Profile and transactions updated." });
     }
+  };
+
+  const onInfoSubmit = (data: CustomerBasicInfo) => {
+    setBasicInfo(data);
+    setShowInfoModal(false);
+    // Auto-start pipeline
+    runPipeline(data);
   };
 
   const totalCredits = txns.filter((t) => t.type === "credit").reduce((s, t) => s + t.amount, 0);
@@ -348,13 +397,58 @@ export function UploadPage() {
           </div>
 
           <button
-            onClick={runPipeline}
-            className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary-glow transition-colors flex items-center justify-center gap-2"
+            disabled
+            className="w-full py-3 rounded-xl bg-muted text-muted-foreground font-semibold flex items-center justify-center gap-2 cursor-not-allowed"
           >
-            Run Risk Analysis Pipeline
-            <ChevronRight className="w-5 h-5" />
+            Processing...
           </button>
         </div>
+      )}
+
+      {/* Modals */}
+      {txns.length > 0 && (
+        <>
+          <CustomerInfoModal
+            isOpen={showInfoModal}
+            onClose={() => {
+              setShowInfoModal(false);
+              setFile(null); // Reset on cancel
+              setTxns([]);
+            }}
+            onSubmit={onInfoSubmit}
+            initialData={{
+              customerId: txns[0].customerId,
+              detectedName: pendingCustomerName,
+              existingProfile: getCustomerById(txns[0].customerId) as any, // Cast for matching fields
+            }}
+          />
+
+          <AlertDialog open={showExistsModal} onOpenChange={setShowExistsModal}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Customer Already Exists</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Customer <strong>{txns[0].customerId}</strong> already exists in the database.
+                  Do you want to update their profile and transactions?
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={() => {
+                  setFile(null);
+                  setTxns([]);
+                }}>
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction onClick={() => {
+                  setShowExistsModal(false);
+                  setShowInfoModal(true); // Open info modal to edit/confirm details
+                }}>
+                  Update Existing
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </>
       )}
     </div>
   );

@@ -1,4 +1,15 @@
 export type RiskBand = "Low" | "Medium" | "High" | "Critical";
+
+export interface CustomerBasicInfo {
+  name: string;
+  mobile: string;
+  email: string;
+  age: string;
+  occupation: string;
+  employmentType: string;
+  city: string;
+  preferredChannel: string;
+}
 export type InterventionTier = "Tier 0" | "Tier 1" | "Tier 2" | "Tier 3";
 export type CustomerStatus = "Active" | "Under Intervention" | "Resolved";
 export type AlertLevel = "critical" | "high" | "medium" | "low";
@@ -27,7 +38,14 @@ export interface UploadHistoryEntry {
 export interface CustomerProfile {
   id: string;
   name: string;
-  segment: "Salaried" | "Self-employed" | "Student" | "Retired";
+  mobile: string;
+  email?: string;
+  age: number;
+  occupation: string;
+  employmentType: "Salaried" | "Self-Employed" | "Student" | "Retired" | "Unemployed";
+  city: string;
+  preferredChannel: "SMS" | "Email" | "Call" | "App Notification";
+  segment: "Salaried" | "Self-employed" | "Student" | "Retired"; // Keeping this for backward compatibility/risk logic
   riskScore: number;
   band: RiskBand;
   predictedDefaultProbability: number;
@@ -83,6 +101,7 @@ export type AuditLogType =
   | "ALERT_GENERATED"
   | "INTERVENTION_TRIGGERED"
   | "CUSTOMER_UPDATED"
+  | "CUSTOMER_PROFILE_UPDATED"
   | "RESET"
   | "LOGIN"
   | "LOGOUT";
