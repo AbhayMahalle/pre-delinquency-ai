@@ -1,0 +1,87 @@
+transaction_id,customer_id,customer_name,date,amount,type,category,balance,merchant,channel
+C-200202-TXN-000001,C-200202,Sanket Patil,2025-11-02,50000,credit,salary,130000,Company Payroll,NetBanking
+C-200202-TXN-000004,C-200202,Sanket Patil,2025-11-03,15000,debit,rent,213000,House Rent Transfer,NetBanking
+C-200202-TXN-000005,C-200202,Sanket Patil,2025-11-03,1095,debit,utility,211905,MSEB Electricity,UPI
+C-200202-TXN-000006,C-200202,Sanket Patil,2025-11-04,1326,debit,medical,210579,Apollo Pharmacy,UPI
+C-200202-TXN-000007,C-200202,Sanket Patil,2025-11-05,1508,debit,utility,209071,MSEB Electricity,UPI
+C-200202-TXN-000008,C-200202,Sanket Patil,2025-11-06,2289,debit,shopping,206782,Amazon,Card
+C-200202-TXN-000010,C-200202,Sanket Patil,2025-11-09,613,debit,entertainment,204082,BookMyShow,UPI
+C-200202-TXN-000009,C-200202,Sanket Patil,2025-11-09,2087,debit,grocery,204695,D-Mart,UPI
+C-200202-TXN-000011,C-200202,Sanket Patil,2025-11-10,1734,debit,fuel,202348,IndianOil,Card
+C-200202-TXN-000012,C-200202,Sanket Patil,2025-11-10,6500,debit,loan_repayment,195848,Loan EMI,AutoDebit
+C-200202-TXN-000013,C-200202,Sanket Patil,2025-11-12,611,debit,fuel,195237,IndianOil,Card
+C-200202-TXN-000014,C-200202,Sanket Patil,2025-11-13,2313,debit,shopping,192924,Amazon,Card
+C-200202-TXN-000015,C-200202,Sanket Patil,2025-11-15,1535,debit,fuel,191389,IndianOil,Card
+C-200202-TXN-000016,C-200202,Sanket Patil,2025-11-16,2424,debit,utility,188965,MSEB Electricity,UPI
+C-200202-TXN-000017,C-200202,Sanket Patil,2025-11-18,1299,debit,grocery,187666,D-Mart,UPI
+C-200202-TXN-000018,C-200202,Sanket Patil,2025-11-18,2900,debit,entertainment,184766,BookMyShow,UPI
+C-200202-TXN-000019,C-200202,Sanket Patil,2025-11-19,927,debit,fuel,183839,IndianOil,Card
+C-200202-TXN-000020,C-200202,Sanket Patil,2025-11-20,2419,debit,medical,181420,Apollo Pharmacy,UPI
+C-200202-TXN-000021,C-200202,Sanket Patil,2025-11-22,2403,debit,grocery,179017,D-Mart,UPI
+C-200202-TXN-000022,C-200202,Sanket Patil,2025-11-23,1813,debit,fuel,177204,IndianOil,Card
+C-200202-TXN-000023,C-200202,Sanket Patil,2025-11-24,812,debit,utility,176392,MSEB Electricity,UPI
+C-200202-TXN-000024,C-200202,Sanket Patil,2025-11-24,2554,debit,entertainment,173838,BookMyShow,UPI
+C-200202-TXN-000025,C-200202,Sanket Patil,2025-11-26,2426,debit,fuel,171412,IndianOil,Card
+C-200202-TXN-000026,C-200202,Sanket Patil,2025-11-26,1808,debit,shopping,169604,Amazon,Card
+C-200202-TXN-000027,C-200202,Sanket Patil,2025-11-29,665,debit,fuel,168939,IndianOil,Card
+C-200202-TXN-000028,C-200202,Sanket Patil,2025-11-30,1875,debit,shopping,167064,Amazon,Card
+C-200202-TXN-000029,C-200202,Sanket Patil,2025-12-02,2156,debit,medical,164908,Apollo Pharmacy,UPI
+C-200202-TXN-000030,C-200202,Sanket Patil,2025-12-02,3681,debit,entertainment,161227,BookMyShow,UPI
+C-200202-TXN-000031,C-200202,Sanket Patil,2025-12-03,15000,debit,rent,146227,House Rent Transfer,NetBanking
+C-200202-TXN-000032,C-200202,Sanket Patil,2025-12-03,1066,debit,grocery,145161,D-Mart,UPI
+C-200202-TXN-000002,C-200202,Sanket Patil,2025-12-04,50000,credit,salary,180000,Company Payroll,NetBanking
+C-200202-TXN-000033,C-200202,Sanket Patil,2025-12-05,3704,debit,lending_app,141457,InstantLoan App,UPI
+C-200202-TXN-000034,C-200202,Sanket Patil,2025-12-06,824,debit,entertainment,140633,BookMyShow,UPI
+C-200202-TXN-000035,C-200202,Sanket Patil,2025-12-07,557,debit,grocery,140076,D-Mart,UPI
+C-200202-TXN-000036,C-200202,Sanket Patil,2025-12-07,1889,debit,shopping,138187,Amazon,Card
+C-200202-TXN-000037,C-200202,Sanket Patil,2025-12-08,2036,debit,fuel,136151,IndianOil,Card
+C-200202-TXN-000038,C-200202,Sanket Patil,2025-12-09,2390,debit,utility,133761,MSEB Electricity,UPI
+C-200202-TXN-000039,C-200202,Sanket Patil,2025-12-10,945,debit,grocery,132816,D-Mart,UPI
+C-200202-TXN-000040,C-200202,Sanket Patil,2025-12-10,6500,debit,loan_repayment,126316,Loan EMI,AutoDebit
+C-200202-TXN-000041,C-200202,Sanket Patil,2025-12-11,1666,debit,medical,124650,Apollo Pharmacy,UPI
+C-200202-TXN-000042,C-200202,Sanket Patil,2025-12-11,1884,debit,lending_app,122766,InstantLoan App,UPI
+C-200202-TXN-000044,C-200202,Sanket Patil,2025-12-12,3327,debit,entertainment,118478,BookMyShow,UPI
+C-200202-TXN-000043,C-200202,Sanket Patil,2025-12-12,961,debit,medical,121805,Apollo Pharmacy,UPI
+C-200202-TXN-000045,C-200202,Sanket Patil,2025-12-16,2515,debit,utility,115963,MSEB Electricity,UPI
+C-200202-TXN-000046,C-200202,Sanket Patil,2025-12-18,613,debit,fuel,115350,IndianOil,Card
+C-200202-TXN-000047,C-200202,Sanket Patil,2025-12-19,280,debit,medical,115070,Apollo Pharmacy,UPI
+C-200202-TXN-000048,C-200202,Sanket Patil,2025-12-21,656,debit,medical,114414,Apollo Pharmacy,UPI
+C-200202-TXN-000049,C-200202,Sanket Patil,2025-12-24,274,debit,medical,114140,Apollo Pharmacy,UPI
+C-200202-TXN-000050,C-200202,Sanket Patil,2025-12-25,292,debit,medical,113848,Apollo Pharmacy,UPI
+C-200202-TXN-000051,C-200202,Sanket Patil,2025-12-26,1538,debit,grocery,112310,D-Mart,UPI
+C-200202-TXN-000052,C-200202,Sanket Patil,2025-12-27,1278,debit,fuel,111032,IndianOil,Card
+C-200202-TXN-000053,C-200202,Sanket Patil,2025-12-29,1733,debit,medical,109299,Apollo Pharmacy,UPI
+C-200202-TXN-000055,C-200202,Sanket Patil,2025-12-30,3670,debit,entertainment,104730,BookMyShow,UPI
+C-200202-TXN-000054,C-200202,Sanket Patil,2025-12-30,899,debit,medical,108400,Apollo Pharmacy,UPI
+C-200202-TXN-000056,C-200202,Sanket Patil,2025-12-31,2037,debit,fuel,102693,IndianOil,Card
+C-200202-TXN-000057,C-200202,Sanket Patil,2026-01-01,1162,debit,utility,101531,MSEB Electricity,UPI
+C-200202-TXN-000060,C-200202,Sanket Patil,2026-01-03,3207,debit,entertainment,82321,BookMyShow,UPI
+C-200202-TXN-000058,C-200202,Sanket Patil,2026-01-03,15000,debit,rent,86531,House Rent Transfer,NetBanking
+C-200202-TXN-000059,C-200202,Sanket Patil,2026-01-03,1003,debit,grocery,85528,D-Mart,UPI
+C-200202-TXN-000061,C-200202,Sanket Patil,2026-01-04,1112,debit,medical,81209,Apollo Pharmacy,UPI
+C-200202-TXN-000062,C-200202,Sanket Patil,2026-01-05,1353,debit,fuel,79856,IndianOil,Card
+C-200202-TXN-000003,C-200202,Sanket Patil,2026-01-05,48000,credit,salary,228000,Company Payroll,NetBanking
+C-200202-TXN-000063,C-200202,Sanket Patil,2026-01-06,1163,debit,medical,78693,Apollo Pharmacy,UPI
+C-200202-TXN-000064,C-200202,Sanket Patil,2026-01-08,561,debit,utility,78132,MSEB Electricity,UPI
+C-200202-TXN-000067,C-200202,Sanket Patil,2026-01-10,6500,debit,loan_repayment,67770,Loan EMI,AutoDebit
+C-200202-TXN-000065,C-200202,Sanket Patil,2026-01-10,1103,debit,fuel,77029,IndianOil,Card
+C-200202-TXN-000066,C-200202,Sanket Patil,2026-01-10,2759,debit,shopping,74270,Amazon,Card
+C-200202-TXN-000068,C-200202,Sanket Patil,2026-01-12,583,debit,grocery,67187,D-Mart,UPI
+C-200202-TXN-000069,C-200202,Sanket Patil,2026-01-13,729,debit,fuel,66458,IndianOil,Card
+C-200202-TXN-000070,C-200202,Sanket Patil,2026-01-13,456,debit,entertainment,66002,BookMyShow,UPI
+C-200202-TXN-000071,C-200202,Sanket Patil,2026-01-14,1490,debit,grocery,64512,D-Mart,UPI
+C-200202-TXN-000072,C-200202,Sanket Patil,2026-01-15,2180,debit,grocery,62332,D-Mart,UPI
+C-200202-TXN-000073,C-200202,Sanket Patil,2026-01-16,3209,debit,utility,59123,MSEB Electricity,UPI
+C-200202-TXN-000074,C-200202,Sanket Patil,2026-01-17,1828,debit,fuel,57295,IndianOil,Card
+C-200202-TXN-000075,C-200202,Sanket Patil,2026-01-18,1846,debit,fuel,55449,IndianOil,Card
+C-200202-TXN-000077,C-200202,Sanket Patil,2026-01-19,3000,debit,atm_withdrawal,50699,ATM Cash Withdrawal,ATM
+C-200202-TXN-000076,C-200202,Sanket Patil,2026-01-19,1750,debit,utility,53699,MSEB Electricity,UPI
+C-200202-TXN-000078,C-200202,Sanket Patil,2026-01-20,1813,debit,grocery,48886,D-Mart,UPI
+C-200202-TXN-000079,C-200202,Sanket Patil,2026-01-21,2409,debit,grocery,46477,D-Mart,UPI
+C-200202-TXN-000080,C-200202,Sanket Patil,2026-01-23,2284,debit,utility,44193,MSEB Electricity,UPI
+C-200202-TXN-000081,C-200202,Sanket Patil,2026-01-25,1588,debit,entertainment,42605,BookMyShow,UPI
+C-200202-TXN-000082,C-200202,Sanket Patil,2026-01-26,1059,debit,utility,41546,MSEB Electricity,UPI
+C-200202-TXN-000083,C-200202,Sanket Patil,2026-01-27,4344,debit,lending_app,37202,InstantLoan App,UPI
+C-200202-TXN-000084,C-200202,Sanket Patil,2026-01-28,762,debit,grocery,36440,D-Mart,UPI
+C-200202-TXN-000085,C-200202,Sanket Patil,2026-01-29,1477,debit,grocery,34963,D-Mart,UPI
+C-200202-TXN-000086,C-200202,Sanket Patil,2026-01-29,2553,debit,entertainment,32410,BookMyShow,UPI
